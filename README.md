@@ -54,8 +54,25 @@ Automation tools may violate the terms of service of online games like Travian. 
 ---
 
 ## Installation
-
+Windows (PowerShell)
 ```bash
 git clone https://github.com/Yaguala/WebBot.git
 cd WebBot
-pip install -r requirements.txt
+
+# Force uv and ChromeDriverManager to use the local WebBot folder
+$env:UV_CACHE_DIR="$PWD\.uv_cache"
+$env:WDM_LOCAL="1"
+
+uv run --with-requirements requirements.txt webbot.py
+```
+macOS / Linux
+```bash
+git clone https://github.com/Yaguala/WebBot.git
+cd WebBot
+
+# Force uv and ChromeDriverManager to use the local WebBot folder
+export UV_CACHE_DIR="$(pwd)/.uv_cache"
+export WDM_LOCAL=1
+
+uv run --with-requirements requirements.txt webbot.py
+```
