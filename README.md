@@ -56,6 +56,9 @@ Automation tools may violate the terms of service of online games like Travian. 
 ## Installation
 Windows (PowerShell)
 ```bash
+# Install uv and load PATH
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"; $env:Path = "$env:USERPROFILE\.local\bin;" + $env:Path
+
 git clone https://github.com/Yaguala/WebBot.git
 cd WebBot
 
@@ -67,6 +70,10 @@ uv run --with-requirements requirements.txt webbot.py
 ```
 macOS / Linux
 ```bash
+# Install uv and load PATH
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+
 git clone https://github.com/Yaguala/WebBot.git
 cd WebBot
 
