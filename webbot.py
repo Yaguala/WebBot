@@ -23,6 +23,45 @@ from modules.pickvillage import village_chose, click_village
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+import os
+import sys
+
+def create_launcher():
+    """Automatically creates a double-clickable launch file for the user's OS on first run."""
+    
+    # 1. Windows setup
+    if sys.platform.startswith("win"):
+        launcher_name = "run_bot.bat"
+        if not os.path.exists(launcher_name):
+            bat_content = (
+                "@echo off\n"
+                "set WDM_LOCAL=1\n"
+                "set UV_CACHE_DIR=%CD%\\.uv_cache\n"
+                "uv run --with-requirements requirements.txt webbot.py\n"
+                "pause\n"
+            )
+            with open(launcher_name, "w") as f:
+                f.write(bat_content)
+            print(f"[+] Automatically created '{launcher_name}' for Windows.")
+
+    # 2. macOS / Linux setup
+    elif sys.platform.startswith("darwin") or sys.platform.startswith("linux"):
+        launcher_name = "run_bot.command"
+        if not os.path.exists(launcher_name):
+            sh_content = (
+                "#!/bin/bash\n"
+                'cd "$(dirname "$0")"\n'
+                "export WDM_LOCAL=1\n"
+                'export UV_CACHE_DIR="$(pwd)/.uv_cache"\n'
+                "uv run --with-requirements requirements.txt webbot.py\n"
+            )
+            with open(launcher_name, "w") as f:
+                f.write(sh_content)
+            
+            # Make the file executable
+            os.chmod(launcher_name, 0o755)
+            print(f"[+] Automatically created '{launcher_name}' for macOS/Linux.")
+
 def run():
     # Setting up Selenium WebDriver with Chrome
     options = Options()
@@ -256,5 +295,7 @@ def run():
     finally:
         input("\n ## Pressiona ENTER para fechar o navegador... ##")
 
+
 if __name__ == "__main__":
+    create_launcher()
     run()
