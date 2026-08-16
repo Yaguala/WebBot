@@ -53,11 +53,17 @@ Automation tools may violate the terms of service of online games like Travian. 
 
 ---
 
-## Installation
+## Installation/Uninstall
+WebBot keeps everything isolated inside the project folder:
+  Python & Libraries are stored in WebBot/.uv_cache/
+  Chrome Drivers are stored in WebBot/.wdm/
+  Deleting the WebBot folder wipes everything clean with zero system clutter.
+
 Windows (PowerShell)
 ```bash
 # Install uv and load PATH
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"; $env:Path = "$env:USERPROFILE\.local\bin;" + $env:Path
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex";
+$env:Path = "$env:USERPROFILE\.local\bin;" + $env:Path
 
 git clone https://github.com/Yaguala/WebBot.git
 cd WebBot
