@@ -61,7 +61,7 @@ WebBot keeps everything isolated inside the project folder:
 
 Deleting the WebBot folder wipes everything clean with zero system clutter.
 
-Windows (PowerShell)
+### Windows (PowerShell)
 ```bash
 # Install uv and load PATH
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex";
@@ -76,7 +76,7 @@ $env:WDM_LOCAL="1"
 
 uv run --with-requirements requirements.txt webbot.py
 ```
-macOS / Linux
+### macOS / Linux
 ```bash
 # Install uv and load PATH
 curl -LsSf https://astral.sh/uv/install.sh | sh
