@@ -58,6 +58,7 @@ WebBot keeps everything isolated inside the project folder:
    - Python & Libraries are stored in WebBot/.uv_cache/  
    - Chrome Drivers are stored in WebBot/.wdm/  
    - Chrome Extensions are stored in WebBot/.extensions/
+
 Deleting the WebBot folder wipes everything clean with zero system clutter.
 
 Windows (PowerShell)
