@@ -31,7 +31,11 @@ def village_chose(wait, driver):
         try:
             #Village name
             village_name = container.find_element(By.XPATH, './div/a/div/span[2]').text
-
+            
+            #Get coorde.
+            #village_coord_x = container.find_element(By.XPATH, './div/span/span/span[1]/text()[2]')
+            #village_coord_y = container.find_element(By.XPATH, './div/span/span/span[3]/text()[1]')
+            
             # Get the specific_xpath
             specific_click_xpath = f'{all_villages_xpath}[{index}]/div/a'
 
@@ -39,7 +43,9 @@ def village_chose(wait, driver):
             data.append({
                 "Village_number": index,
                 "Village_Name": village_name,
-                "Village_Link": specific_click_xpath
+                "Village_Link": specific_click_xpath,
+                #"centro_x": village_coord_x,
+                #"centro_y": village_coord_y
             })
 
         except Exception as e:

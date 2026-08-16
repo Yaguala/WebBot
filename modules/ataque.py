@@ -32,14 +32,14 @@ def lancamento(driver, wait, df_inact):
             quantidade_paladinos = None  # valor padrão
             ataque_confirm, ataque_confirmado, sem_aldeia = enviar_ataque(driver, wait, TARGET_X, TARGET_Y, quantidade_salteadores, quantidade_paladinos, ataque_confirmado, sem_aldeia)
             if ataque_confirm == True:
-                df_inact.loc[(df_inact['X'] == int(TARGET_X)) & (df_inact['Y'] == int(TARGET_Y)), 'Progress'] = True
+                df_inact.loc[(df_inact['X'] == int(TARGET_X)) & (df_inact['Y'] == int(TARGET_Y)), 'Progress'] = False
                 df_inact.to_csv('data/inact_progress.csv', index=False)
         elif SALTEADORES < 5 and PALADINO >= 2:
             quantidade_paladinos = "2"
             quantidade_salteadores = None
             ataque_confirm, ataque_confirmado, sem_aldeia = enviar_ataque(driver, wait, TARGET_X, TARGET_Y, quantidade_salteadores, quantidade_paladinos, ataque_confirmado, sem_aldeia)
             if ataque_confirm == True:
-                df_inact.loc[(df_inact['X'] == int(TARGET_X)) & (df_inact['Y'] == int(TARGET_Y)), 'Progress'] = True
+                df_inact.loc[(df_inact['X'] == int(TARGET_X)) & (df_inact['Y'] == int(TARGET_Y)), 'Progress'] = False
                 df_inact.to_csv('data/inact_progress.csv', index=False)
         else:
             print(f"## Not enought trops to make the atack {TARGET_X}|{TARGET_Y} (Salteadores: {SALTEADORES}, Paladinos: {PALADINO}) \nAttacks ended number of attacks : {x}.")

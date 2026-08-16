@@ -1,6 +1,4 @@
 # config.py
-EMAIL = "ricandrade4820.005@gmail.com"
-PASSWORD = "RI110291ca!?"
 
 # Dados do ataque
 TARGET_X = "180"

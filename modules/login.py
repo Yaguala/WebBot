@@ -47,13 +47,34 @@ def fazer_login(driver, wait, email, password):
     print("6. Selecting server (Play Now)...")
     time.sleep(3)
 
-    play_button = wait.until(
-        EC.element_to_be_clickable((By.XPATH, '//*[@id="accountAvatars"]/section[1]/div[1]/div[2]/button'))
-    )
-    play_button.click()
-    print("7. Entering the Europa 10 server...")
+    try:
+        # Get the server names in the section class yourGameworlds.
+        server_section = wait.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "yourGameworlds"))
+        )
+
+        # Find all server names and print them with their corresponding numbers
+        for server in server_section.find_elements(By.CLASS_NAME, "gameworldName"):
+            countserver = server_section.find_elements(By.CLASS_NAME, "gameworldName").index(server) + 1
+            print(f"   Found server {countserver} : {server.text}")
+        
+        # Get the user input for the server number position.
+        x = int(input("   Enter the number corresponding to the server you want to join (1, 2, 3, ...): "))
+        
+        # Click the Play button for the selected server X
+        play_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, f'//*[@id="accountAvatars"]/section[1]/div[{x}]/div[2]/button'))
+        )
+        play_button.click()
+        
+        Server_picked = server_section.find_elements(By.CLASS_NAME, 'gameworldName')[x-1].text
+        print(f"8. Entering the {Server_picked} server...")
+    except Exception as e:
+        print(f"Error finding server section: {e}")
+
+
 
     time.sleep(3)
     print("## Login and entry into the server completed successfully! ##\n")
 
-    return True
+    return Server_picked, True
