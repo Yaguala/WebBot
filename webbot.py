@@ -20,6 +20,7 @@ from modules.login import fazer_login
 from modules.ataque import scrap_tropas, lancamento
 from modules.scraper import scrap_vilas_bs4
 from modules.pickvillage import village_chose, click_village
+from modules.adsrewards import adsrewards
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
@@ -161,6 +162,7 @@ def run():
             print("Loggin successful! What do you want to do?")
             print("1 - Update farmlist")
             print("2 - Send attacks")
+            print("3 - Watch video for rewards")
             x = input()
             if x == "1":
                 # Check if there is a old session to be continued
@@ -284,6 +286,10 @@ def run():
 
                 print(f"\nExecutado com sucesso! ataques confirmados: {ataque_confirmado}, sem aldeia: {sem_aldeia}")
                 os.remove('data/inact_progress.csv')
+
+            elif x == "3":
+                adsrewards(driver, wait)
+
             else:
                 print("Opção inválida. Encerrando o programa.")
         else:

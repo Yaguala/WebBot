@@ -364,17 +364,6 @@ def farmlist(driver, wait, df_inact, server_picked, village_picked):
 
         # Check the expanded containers
         colapse(driver, wait)
-        """colapse = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="rallyPointFarmList"]/div[1]/div[1]')))
-
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", colapse)
-        time.sleep(2)
-        colapse_button = wait.until(EC.element_to_be_clickable(colapse))
-        colapse_button.click()
-        
-        if expanded.get_attribute("class") == "villageHeader expanded":
-            colapse_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="rallyPointFarmList"]/div[1]/div[1]/a')))
-            print("   ✓ Colapse button found, clicking to open category...")
-            colapse_button.click()time.sleep(2)"""
 
         if df_inact.iloc[x]['Village'] == 'Natars':
              if df_inact.iloc[x]['População'] > 150:
