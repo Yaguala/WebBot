@@ -49,13 +49,16 @@ def playvideo(driver, wait):
             element = driver.find_element(By.CSS_SELECTOR, ".atg-gima-big-play-button-outer")
             play_video_button = wait.until(EC.element_to_be_clickable(element))
             play_video_button.click()
-            for _ in tqdm(range(40), desc="Playing video...", unit="sec"):
+            for _ in tqdm(range(40), desc="Playing", unit="sec", leave=True):
                 time.sleep(1)
-    except NoSuchElementException:
-        # After the video get back to iframe default
+    except Exception :
+        # Button not found, continue execution without error    
         print("Play video button not found - continuing execution")
-    driver.switch_to.default_content()    
-    # Button not found, continue execution without error    
+        for _ in tqdm(range(40), desc="Waiting", unit="sec", leave=True):
+            time.sleep(1)
+    finally:
+        # After the video get back to iframe default
+        driver.switch_to.default_content()
     pass
 
 def adsrewards(driver, wait):

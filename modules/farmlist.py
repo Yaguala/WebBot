@@ -13,7 +13,7 @@ import os
 import json
 
 # File to save the names of the lists in the farmlist, so we can find them later and add the villages to the correct list
-FILE = "data\list_names.json"
+FILE = "data/list_names.json"
 
 # List of names for the farmlist categories, we will load this from a json file later
 # Keep in mind that the list may change with the gameslist, so if you start a new game you may need to update the list
@@ -45,7 +45,7 @@ def expand_colapse(wait, dropContainer):
         return
 
 def list_control(listdic, farm_name_list):
-        """Verifies if farm_name_list has a match with listdic.
+        r"""Verifies if farm_name_list has a match with listdic.
     If there is a match, add a suffix " - (\d+)$" to the listdic 
     and verifies again until there's no match.
         Args:
