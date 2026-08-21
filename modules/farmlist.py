@@ -36,9 +36,10 @@ def colapse(driver, wait):
             driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", expand_collapse)
             wait.until(EC.element_to_be_clickable(expand_collapse)).click()
 
-def expand_colapse(wait, dropContainer):
+def expand_colapse(driver, wait, dropContainer):
         """Funtion to expand or colapse the dropContainer"""
         expand_collapse = dropContainer.find_element(By.CLASS_NAME, "expandCollapse")
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", expand_collapse)
         expanded = wait.until(EC.element_to_be_clickable(expand_collapse))
         expanded.click()
         time.sleep(2)
@@ -93,12 +94,14 @@ def creat_list(driver, wait, listdic, village_picked, farm_name_list):
     list_name.send_keys(listdic)
 
     #Select village from the user: village_picked
-    otptions = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="createFarmListForm"]/label[2]/select/option')))
-    for option in otptions:
+    options = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//*[@id="createFarmListForm"]/label[2]/select/option')))
+    for option in options:
         if option.text.strip() == village_picked:
-            option.click()
-        else:
-                print("No village found to Select village in list creation")
+            # Select the option by clicking it
+            wait.until(EC.element_to_be_clickable(option)).click()
+            break
+    else:
+        print("No village found to select in list creation")
     
     #Add Trops
     x_input = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="createFarmListForm"]/div[2]/label[1]/input')))
@@ -107,14 +110,9 @@ def creat_list(driver, wait, listdic, village_picked, farm_name_list):
     
     #Click the key creat list
     wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="createFarmListForm"]/div[4]/button[2]'))).click()
-    
-    """# Check if the tabs are expanded and if so, colapse them
-    expanded = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="rallyPointFarmList"]/div[1]/div[1]/a')))
-    # Scroll in case the button is out of the screen
-    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", expanded)
-    time.sleep(1)
+    time.sleep(10)
 
-    expanded.click()"""
+
     dropContainer = find_list(driver, wait, listdic, village_picked)
     return dropContainer
 
@@ -122,6 +120,7 @@ def find_list(driver, wait, listdic, village_picked):
     """ Funtion that reads the dropcontainer of the pointed village and checks the already saved in villageWrapper if so check if the chosen list, (listdic) is in,
     so could then check the number of vilages inside"""
     try:
+        colapse(driver, wait)
         # Open the farm list page and detect the right section with the id "rallyPointFarmList".
         rally_pointfarmlist = wait.until(EC.presence_of_element_located((By.ID, "rallyPointFarmList")))
         
@@ -149,11 +148,16 @@ def find_list(driver, wait, listdic, village_picked):
                             else:
                                  ## Input_cords
                                 return dropContainer
-            else:
                 print("No farm list to the vilage pikedup")
                 farm_name_list = None
                 dropContainer = creat_list(driver, wait, listdic, village_picked, farm_name_list)
                 return dropContainer
+                    
+        print("The picked village has not yet any farm list")
+        farm_name_list = None
+        dropContainer = creat_list(driver, wait, listdic, village_picked, farm_name_list)
+        return dropContainer
+
             
     except Exception as e:
         print(f"An error occurred while cleaning data: {e}")
@@ -162,10 +166,11 @@ def find_list(driver, wait, listdic, village_picked):
 def input_cords(driver, wait, cord_x, cord_y, dropContainer):
     """Input the coordinates in the respective fields and click the button to refresh the page with the coordinates"""
     
-    
+    colapse(driver, wait)
     # Expand the list to add the village to the correct list
     time.sleep(3)
     expand_collapse = dropContainer.find_element(By.CLASS_NAME, "expandCollapse")
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", expand_collapse)
     expanded = wait.until(EC.element_to_be_clickable(expand_collapse))
     expanded.click()
     time.sleep(2)
@@ -323,7 +328,7 @@ def clean_data(df_inact, df_saved_vilages):
     try:
         # Convert target column to string for proper comparison
         # Check if Target column exists and DataFrame is not empty
-        if not df_saved_vilages.empty and 'Target' in df_saved_vilages.columns:
+        if df_saved_vilages is not None:
             df_inact['Village'] = df_inact['Village'].astype(str)
             df_saved_vilages['Target'] = df_saved_vilages['Target'].astype(str)
 
@@ -365,7 +370,7 @@ def farmlist(driver, wait, df_inact, server_picked, village_picked):
         # Check the expanded containers
         colapse(driver, wait)
 
-        if df_inact.iloc[x]['Village'] == 'Natars':
+        if df_inact.iloc[x]['Player'] == 'Natars':
              if df_inact.iloc[x]['População'] > 150:
                 print(f"   ✓ Village in ({cord_x}|{cord_y}) with population {df_inact.iloc[x]['População']} classified as a Natars 150 Plus.")
                 dropContainer = find_list(driver, wait, listdic[4], village_picked)
