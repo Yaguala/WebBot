@@ -10,7 +10,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 import time
 import pandas as pd
-from tqdm import tqdm
 import os
 import pyautogui
 
@@ -24,7 +23,6 @@ from modules.adsrewards import adsrewards
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-import os
 import sys
 
 def create_launcher():
@@ -159,6 +157,21 @@ def run():
         server_picked, sucesso_login = fazer_login(driver, wait, EMAIL, PASSWORD)
 
         if sucesso_login:
+            try:
+                # Remove Consent to Cookies & Data processing window by rejecting all!
+                cmpwrapper = driver.find_element(By.ID, "cmpwrapper")
+                shadow_root = cmpwrapper.shadow_root # Jump inside the shadow_root repartition
+
+                button = shadow_root.find_element(
+                    By.CSS_SELECTOR,
+                    "#cmpbox #cmpwelcomebtnno > a"
+                )
+
+                button.click()
+            except Exception as e:
+                print(f"\n ## Remove Consent to Cookies & Data processing window by rejecting all!: {e}")
+
+            # Menu of Bot!
             print("Loggin successful! What do you want to do?")
             print("1 - Update farmlist")
             print("2 - Send attacks")
@@ -250,7 +263,7 @@ def run():
                             exit()
                 else:
                     print("- No previous session found. Starting a new session...")
-                    server = {"EUROPA 10": "ts10.x1.europe", "INTERNATIONAL 4": "ts4.x1.international"}
+                    server = {"EUROPE 10": "ts10.x1.europe", "INTERNATIONAL 4": "ts4.x1.international", "EUROPE 12": "ts12.x1.europe"}
 
                     driver.get(f"https://{server[server_picked]}.travian.com/build.php?id=39&gid=16&tt=2")        
                     

@@ -46,9 +46,8 @@ def expand_colapse(driver, wait, dropContainer):
         return
 
 def list_control(listdic, farm_name_list):
-        r"""Verifies if farm_name_list has a match with listdic.
-    If there is a match, add a suffix " - (\d+)$" to the listdic 
-    and verifies again until there's no match.
+        """Verifies if farm_name_list has a match with listdic. 
+        If there is a match, add a suffix " - (\d+)$" to the listdic and verifies again until there's no match.
         Args:
         farm_name_list (str): The name to check
         listdic (list): List of existing names to compare against
@@ -60,8 +59,8 @@ def list_control(listdic, farm_name_list):
         base_name = listdic
         
         # Check if this exact name already exists in listdic
-        if listdic not in farm_name_list:
-            return listdic
+        #if listdic not in farm_name_list:
+        #    return listdic
         
         # If it does exist, we need to find an unique name by adding suffixes
         counter = 1
@@ -75,23 +74,45 @@ def list_control(listdic, farm_name_list):
 
             counter += 1
 
-def creat_list(driver, wait, listdic, village_picked, farm_name_list):
-    # Creates a list in case there is no list in the farmlist. 
+def creat_list(driver, wait, listdic, village_picked, farm_name_list, villagewarpper):
+    # Creates a list in case there is no list in the farmlist, or the list is already full
     
     # Verifies if listdic possibility to be added
     if farm_name_list is not None:
-        listdic = list_control(listdic, farm_name_list)
+        listdic_newlist = list_control(listdic, farm_name_list)
+        print(f"Newlis{listdic_newlist} and  farm_name list {farm_name_list}")
+    # In case there is no list yet created
+    else:
+        listdic_newlist = listdic
 
-    print(f"Creating a 1st list for {listdic}...")
-    
-    #Click the button to creat a new list
+    print(f"Checking if there is other list {listdic_newlist}...")
+    # Check if there is already a list with same name:
+    for dropContainer in villagewarpper.find_elements(By.CLASS_NAME, "dropContainer"):
+        farm_name_list = dropContainer.find_element(By.CLASS_NAME, "name")
+        farm_name_list = farm_name_list.text.strip()
+        if listdic_newlist == farm_name_list:
+                max_village = dropContainer.find_element(By.CLASS_NAME, "farmListStatus")
+                # If the number of village is 100. Then it will click on
+                numbers = re.findall(r"\d+", max_village.text)
+                first_value = int(numbers[1])
+                if first_value == 100:
+                    # Creat a new list because the list is already full
+                    print(f"List {listdic_newlist} is full try to creat other list...")
+                    dropContainer = creat_list(driver, wait, listdic, village_picked, farm_name_list, villagewarpper)
+                    return dropContainer
+                else:
+                    ## Input_cords
+                    return dropContainer
+
+    print(f"Creating a 1st list for {listdic_newlist}...")
+    # Click the button to creat a new list
     creat_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="stickyWrapper"]/button[1]')))
     creat_button.click()
 
     #Give a Name to the list
     list_name = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="createFarmListForm"]/label[1]/input')))
     list_name.clear()
-    list_name.send_keys(listdic)
+    list_name.send_keys(listdic_newlist)
 
     #Select village from the user: village_picked
     options = wait.until(EC.presence_of_all_elements_located((By.XPATH, '//*[@id="createFarmListForm"]/label[2]/select/option')))
@@ -142,8 +163,10 @@ def find_list(driver, wait, listdic, village_picked):
                             numbers = re.findall(r"\d+", max_village.text)
                             first_value = int(numbers[1])
                             if first_value == 100:
+                                # Look for other avaible list
+
                                 # Creat a new list because the list is already full
-                                dropContainer = creat_list(driver, wait, listdic, village_picked, farm_name_list)
+                                dropContainer = creat_list(driver, wait, listdic, village_picked, farm_name_list, villagewarpper)
                                 return dropContainer
                             else:
                                  ## Input_cords
@@ -346,7 +369,7 @@ def clean_data(df_inact, df_saved_vilages):
 
 def farmlist(driver, wait, df_inact, server_picked, village_picked):
     """Open the farmlist page and add the villages from the dataframe to the respective lists based on their population"""
-    server = {"EUROPA 10": "ts10.x1.europe", "INTERNATIONAL 4": "ts4.x1.international"}
+    server = {"EUROPE 10": "ts10.x1.europe", "INTERNATIONAL 4": "ts4.x1.international", "EUROPE 12": "ts12.x1.europe"}
     print("Opening Farmlist...")
     driver.get(f"https://{server[server_picked]}.travian.com/build.php?id=39&gid=16&tt=99")
     print("   ✓ Farmlist opened, starting to add targets...")
